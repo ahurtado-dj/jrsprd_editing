@@ -1,0 +1,644 @@
+{
+    "application": {
+        "title": "Jrsprd",
+        "theme": "bootswatch-paper",
+        "footer_text": "&copy; ANDJE 2015",
+        "x.frontend": "materialize",
+        "x.theme": "bootswatch-darkly",
+        "x.use_collection2": false,
+        "roles": [
+            "admin",
+            "user"
+        ],
+        "default_role": "user",
+        "send_verification_email": true,
+        "collections": [
+            {
+                "name": "customers"
+            },
+            { "name": "ciudades",
+              "fields": [
+                { "name": "rj_codigo", "type": "string", "title": "Codigo (Rj)", "required": true, "exportable": true },
+                { "name": "nombre", "type": "string", "title": "Nombre", "required": true, "exportable": true }
+              ]
+            },
+            { "name": "fichas",
+              "fields": [
+                { "name": "procesocaso_rj_nro", "type": "string", "title": "Proceso/Caso Nro", "required": true, "exportable": true },
+                { "name": "ciudad_ref", "title": "Ciudad (Ref)", "required": true, "exportable": false, "input": "select", "lookup_query_name": "ciudad_list", "lookup_field": "nombre", "lookup_key": "_id", "show_in_dataview": false, "show_in_read_only_form": false, "join_collection":"ciudades", "join_container": "ciudad", "join_fields": ["nombre", "rj_codigo"]  },
+                { "name": "jurisdiccion", "type": "string", "title": "Jurisdiccion/Especialidad/Corporacion", "required": true, "exportable": true },
+                { "name": "fecha_providencia", "type": "date", "format": "YYYY-MM-DD","input": "datepicker","default": "today", "title": "Fecha de Providencia", "required": false, "exportable": true },
+                { "name": "magistrado_ponente", "type": "string", "title": "Magistrado Ponente", "required": false, "exportable": true },
+                { "name": "sentido_fallo", "type": "string", "title": "Sentido del Fallo", "required": false, "exportable": true },
+                { "name": "hechos_relevantes", "type": "string", "title": "Hechos relevantes", "required": false, "exportable": true }
+              ]
+            }
+        ],
+        "queries": [
+            {
+                "name": "admin_users",
+                "collection": "users",
+                "filter": {}
+            },
+            {
+                "name": "admin_user",
+                "collection": "users",
+                "filter": {
+                    "_id": ":userId"
+                },
+                "find_one": true
+            },
+            {
+                "name": "users_null",
+                "collection": "users",
+                "filter": {
+                    "_id": null
+                },
+                "find_one": true
+            },
+            {
+                "name": "current_user_data",
+                "collection": "users",
+                "filter": {
+                    "_id": "Meteor.userId()"
+                },
+                "find_one": true
+            },
+
+            { "name": "fichas",
+            	"collection": "fichas",
+            	"filter": {}
+            },
+            { "name": "fichas_empty",
+            	"collection": "fichas",
+            	"filter": {"_id": null},
+              "find_one": true
+            },
+            { "name": "ficha",
+            	"collection": "fichas",
+            	"filter": {"_id": ":fichaId"},
+              "find_one": true
+            },
+            { "name": "ciudades",
+            	"collection": "ciudades",
+            	"filter": {}
+            },
+            { "name": "ciudad_list",
+            	"collection": "ciudades",
+            	"filter": {},
+              "related_queries": [
+              	{ "name": "fichas" }
+              ]
+            },
+            { "name": "ciudades_empty",
+            	"collection": "ciudades",
+            	"filter": {"_id": null},
+              "find_one": true
+            },
+            { "name": "ciudad",
+            	"collection": "ciudades",
+            	"filter": {"_id": ":ciudadId"},
+              "find_one": true
+            }
+        ],
+        "public_zone": {
+            "pages": [
+                {
+                    "name": "home_public",
+                    "title": "",
+                    "components": [
+                        {
+                            "name": "home_jumbotron",
+                            "title": "Jurisprudencia / Editor",
+                            "type": "jumbotron",
+                            "dest_position": "before",
+                            "text": "Edicion de fichas de jurisprudencia",
+                            "button_title": "Continue &raquo;",
+                            "button_route": "login"
+                        },
+                        {  "name": "content_row1",
+      											"type": "section",
+                            "text": "<h2>Buscador</h2><p>buscador fulltext basado en ajax-solr</p><p><a class='btn btn-default' href=\"http://localhost:3002/examples/reuters\" target=\"_blank\" role='button'>View details »</a></p>"
+                        },
+                        {  "name": "content_row2",
+      											"type": "section",
+                            "text": "<h2>Indexador</h2><p>a traves de solr-dataimport handler</p><p><a class='btn btn-default' href=\"http://localhost:8983/solr\" target=\"_blank\" role='button'>View details »</a></p>"
+                        }
+                    ]
+                },
+                { "name": "login", "template": "login" },
+                { "name": "register", "template": "register" },
+                { "name": "forgot_password", "template": "forgot_password" },
+                { "name": "reset_password",  "template": "reset_password", "route_params": [ "resetPasswordToken" ] },
+                {
+                    "name": "verify_email",
+                    "template": "verify_email",
+                    "route_params": [
+                        "verifyEmailToken"
+                    ]
+                }
+            ],
+            "components": [
+                {
+                    "name": "left_menu",
+                    "type": "menu",
+                    "class": "nav navbar-nav",
+                    "title": "Left menu",
+                    "dest_selector": "#menu",
+                    "items": [
+                        {
+                            "title": "Home",
+                            "route": "home_public",
+                            "icon_class": "store"
+                        }
+                    ]
+                },
+                {
+                    "name": "right_menu",
+                    "type": "menu",
+                    "class": "nav navbar-nav navbar-right",
+                    "dest_selector": "#menu",
+                    "title": "Right menu",
+                    "items": [
+                        {
+                            "title": "Register",
+                            "route": "register",
+                            "icon_class": "assignment_ind"
+                        },
+                        {
+                            "title": "Login",
+                            "route": "login",
+                            "icon_class": "lock_open"
+                        }
+                    ]
+                }
+            ]
+        },
+        "private_zone": {
+            "pages": [
+                {
+                  "name": "home_private",
+                  "title": "",
+                  "components": [
+                      {
+                          "name": "home_private_jumbotron",
+                          "title": "Jurisprudencia / Editor",
+                          "type": "jumbotron",
+                          "text": "Edicion de fichas de jurisprudencia. Bienvenido, {{userFullName}}!",
+                          "button_title": "Continue &raquo;",
+                          "button_route": "editor.fichas"
+                      }
+                  ]
+                },
+                {
+                    "name": "admin",
+                    "roles": [
+                        "admin"
+                    ],
+                    "pages": [
+                        {
+                            "name": "users",
+                            "components": [
+                                {
+                                    "name": "view",
+                                    "type": "data_view",
+                                    "title": "Users",
+                                    "text_if_empty": "No users yet",
+                                    "query_name": "admin_users",
+                                    "query_params": [],
+                                    "fields": [
+                                        {
+                                            "name": "profile.name",
+                                            "title": "Name"
+                                        },
+                                        {
+                                            "name": "profile.email",
+                                            "title": "E-mail"
+                                        },
+                                        {
+                                            "name": "roles",
+                                            "title": "Role"
+                                        }
+                                    ],
+                                    "insert_route": "admin.users.insert",
+                                    "edit_route": "admin.users.edit",
+                                    "edit_route_params": [
+                                        {
+                                            "name": "userId",
+                                            "value": "this._id"
+                                        }
+                                    ],
+                                    "details_route": "admin.users.details",
+                                    "details_route_params": [
+                                        {
+                                            "name": "userId",
+                                            "value": "this._id"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "pages": [
+                                {
+                                    "name": "details",
+                                    "route_params": [
+                                        "userId"
+                                    ],
+                                    "components": [
+                                        {
+                                            "name": "details_form",
+                                            "type": "form",
+                                            "mode": "read_only",
+                                            "title": "User details",
+                                            "query_name": "admin_user",
+                                            "query_params": [],
+                                            "fields": [
+                                                {
+                                                    "name": "profile.name",
+                                                    "title": "Name"
+                                                },
+                                                {
+                                                    "name": "profile.email",
+                                                    "title": "E-mail",
+                                                    "type": "email"
+                                                },
+                                                {
+                                                    "name": "roles",
+                                                    "title": "Role"
+                                                }
+                                            ],
+                                            "close_route": "admin.users",
+                                            "back_route": "admin.users"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "insert",
+                                    "components": [
+                                        {
+                                            "name": "insert_form",
+                                            "type": "form",
+                                            "mode": "insert",
+                                            "title": "Add new user",
+                                            "submit_route": "admin.users",
+                                            "cancel_route": "admin.users",
+                                            "query_name": "users_null",
+                                            "query_params": [],
+                                            "fields": [
+                                                {
+                                                    "name": "profile.name",
+                                                    "title": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "profile.email",
+                                                    "title": "E-mail",
+                                                    "type": "email",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "password",
+                                                    "title": "Password",
+                                                    "input": "password",
+                                                    "required": true
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "edit",
+                                    "route_params": [
+                                        "userId"
+                                    ],
+                                    "components": [
+                                        {
+                                            "name": "edit_form",
+                                            "type": "form",
+                                            "mode": "update",
+                                            "title": "Edit user",
+                                            "submit_route": "admin.users",
+                                            "cancel_route": "admin.users",
+                                            "query_name": "admin_user",
+                                            "query_params": [],
+                                            "fields": [
+                                                {
+                                                    "name": "profile.name",
+                                                    "title": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "profile.email",
+                                                    "title": "E-mail",
+                                                    "type": "email",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "roles",
+                                                    "type": "array",
+                                                    "title": "Role",
+                                                    "input": "radio",
+                                                    "input_items": [
+                                                        {
+                                                            "value": "user",
+                                                            "title": "User"
+                                                        },
+                                                        {
+                                                            "value": "admin",
+                                                            "title": "Admin"
+                                                        },
+                                                        {
+                                                            "value": "blocked",
+                                                            "title": "Blocked"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "components": [
+                        {
+                            "name": "side_menu",
+                            "type": "menu",
+                            "class": "collection",
+                            "items": [
+                                {
+                                    "title": "Users",
+                                    "route": "admin.users",
+                                    "class": "collection-item"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "user_settings",
+                    "roles": [
+                        "user",
+                        "admin"
+                    ],
+                    "pages": [
+                        {
+                            "name": "profile",
+                            "components": [
+                                {
+                                    "name": "edit_form",
+                                    "type": "form",
+                                    "mode": "update",
+                                    "title": "Edit your profile",
+                                    "submit_route": "user_settings.profile",
+                                    "query_name": "current_user_data",
+                                    "query_params": [],
+                                    "fields": [
+                                        {
+                                            "name": "profile.name",
+                                            "title": "Name",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "profile.email",
+                                            "title": "E-mail",
+                                            "type": "email",
+                                            "required": true
+                                        },
+                                        {
+                                            "name": "profile.facebook",
+                                            "title": "Facebook URL"
+                                        },
+                                        {
+                                            "name": "profile.google",
+                                            "title": "Google+ URL"
+                                        },
+                                        {
+                                            "name": "profile.twitter",
+                                            "title": "Twitter ID"
+                                        },
+                                        {
+                                            "name": "profile.website",
+                                            "title": "Website URL"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "change_pass",
+                            "template": "change_pass"
+                        }
+                    ],
+                    "components": [
+                        {
+                            "name": "side_menu",
+                            "type": "menu",
+                            "class": "collection",
+                            "items": [
+                                { "title": "Profile", "route": "user_settings.profile", "class": "collection-item" },
+                                { "title": "Change password", "route": "user_settings.change_pass", "class": "collection-item" }
+                            ]
+                        }
+                    ]
+                },
+                { "name": "editor",
+                  "roles": [
+                      "user",
+                      "admin"
+                  ],
+                  "pages": [
+                    { "name": "fichas",
+                      "roles": [
+                          "user",
+                          "admin"
+                      ],
+                      "pages": [
+                        { "name": "insert",
+                          "components": [
+                            { "name": "insert_form",
+                              "type": "form",
+                              "mode": "insert",
+                              "title": "Nueva Ficha",
+                              "query_name": "fichas_empty",
+                              "query_params": [],
+                              "submit_route": "editor.fichas",
+                              "cancel_route": "editor.fichas"
+                            }
+                          ]
+                        },
+                        { "name": "details",
+                          "route_params": ["fichaId"],
+                          "components": [
+                            { "name": "details_form",
+                              "type": "form",
+                              "mode": "read_only",
+                              "title": "Detalles Ficha",
+                              "layout": "horizontal",
+                              "query_name": "ficha",
+                              "query_params": [],
+                              "close_route": "editor.fichas",
+                              "back_route": "editor.fichas"
+                            }
+                          ]
+                        },
+                        { "name": "edit",
+                          "route_params": ["fichaId"],
+                          "components": [
+                            { "name": "edit_form",
+                              "type": "form",
+                              "mode": "update",
+                              "title": "Editar Ficha",
+                              "submit_route": "editor.fichas",
+                              "cancel_route": "editor.fichas",
+                              "query_name": "ficha",
+                              "query_params": []
+                            }
+                          ]
+                        }
+                      ],
+                      "components": [
+                        { "name": "view",
+                          "type": "data_view",
+                          "title": "Fichas",
+                          "text_if_empty": "sin fichas :(",
+                          "query_name": "fichas",
+                          "query_params": [],
+                          "insert_route": "editor.fichas.insert",
+                          "edit_route": "editor.fichas.edit",
+                          "edit_route_params": [
+                            { "name": "fichaId", "value": "this._id" }
+                          ],
+                          "details_route": "editor.fichas.details",
+                          "details_route_params": [
+                            { "name": "fichaId", "value": "this._id" }
+                          ]
+                        }
+
+                      ]
+
+                    },
+                    { "name": "ciudades",
+                      "roles": [
+                          "user",
+                          "admin"
+                      ],
+                      "pages": [
+                        { "name": "insert",
+                          "components": [
+                            { "name": "insert_form",
+                              "type": "form",
+                              "mode": "insert",
+                              "title": "Nueva Ciudad",
+                              "query_name": "ciudades_empty",
+                              "query_params": [],
+                              "submit_route": "editor.ciudades",
+                              "cancel_route": "editor.ciudades"
+                            }
+                          ]
+                        },
+                        { "name": "details",
+                          "route_params": ["ciudadId"],
+                          "components": [
+                            { "name": "details_form",
+                              "type": "form",
+                              "mode": "read_only",
+                              "title": "Detalles Ciudad",
+                              "layout": "horizontal",
+                              "query_name": "ciudad",
+                              "query_params": [],
+                              "close_route": "editor.ciudades",
+                              "back_route": "editor.ciudades"
+                            }
+                          ]
+                        },
+                        { "name": "edit",
+                          "route_params": ["ciudadId"],
+                          "components": [
+                            { "name": "edit_form",
+                              "type": "form",
+                              "mode": "update",
+                              "title": "Editar Ciudad",
+                              "submit_route": "editor.ciudades",
+                              "cancel_route": "editor.ciudades",
+                              "query_name": "ciudad",
+                              "query_params": []
+                            }
+                          ]
+                        }
+                      ],
+                      "components": [
+                        { "name": "view",
+                          "type": "data_view",
+                          "title": "Ciudades",
+                          "text_if_empty": "sin ciudades :(",
+                          "query_name": "ciudades",
+                          "query_params": [],
+                          "insert_route": "editor.ciudades.insert",
+                          "edit_route": "editor.ciudades.edit",
+                          "edit_route_params": [
+                            { "name": "ciudadId", "value": "this._id" }
+                          ],
+                          "details_route": "editor.ciudades.details",
+                          "details_route_params": [
+                            { "name": "ciudadId", "value": "this._id" }
+                          ]
+                        }
+
+                      ]
+
+                    }
+
+                  ],
+                  "components": [
+                    {
+                        "name": "side_menu",
+                        "type": "menu",
+                        "class": "collection",
+                        "items": [
+                            { "title": "Fichas", "route": "editor.fichas", "class": "collection-item" },
+                            { "title": "Ciudades", "route": "editor.ciudades", "class": "collection-item" }
+                        ]
+                    }
+                  ]
+                },
+
+
+
+
+                {
+                    "name": "logout",
+                    "template": "logout"
+                }
+            ],
+            "components": [
+                {
+                    "name": "left_menu",
+                    "type": "menu",
+                    "title": "Left menu",
+                    "class": "nav navbar-nav",
+                    "dest_selector": "#menu",
+                    "items": [
+                        { "title": "Home", "route": "home_private", "icon_class": "home" },
+                        { "title": "Editor", "route": "editor", "icon_class": "editor"   }
+                    ]
+                },
+                {
+                    "name": "right_menu",
+                    "type": "menu",
+                    "class": "nav navbar-nav navbar-right",
+                    "dest_selector": "#menu",
+                    "items": [
+                        {
+                            "title": "{{userEmail}}",
+                            "items": [
+                            	{ "title": "Settings", "route": "user_settings", "icon_class": "settings" },
+                              { "title": "Admin", "route": "admin", "icon_class": "brightness_auto" },
+                            	{ "title": "Logout", "route": "logout", "icon_class": "power_settings_new" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
