@@ -1,3 +1,7 @@
+-------------------------------
+SCAFFOLD
+-------------------------------
+
 meteor create jrsprd  # crear la app
 meteor add twbs:bootstrap # layout
 meteor add underscore
@@ -38,18 +42,8 @@ meteor mongo # cliente mongo-consola
 #minimongo
 meteor #iniciar la app
 
-REFERENCIAS
-- https://themeteorchef.com/recipes/building-complex-forms/#tmc-getting-started
-- https://github.com/meteoris/meteoris
-- https://www.discovermeteor.com/
-- https://github.com/jtolla/meteor-admin-lte
-- http://meteor-boiler.meteor.com/blank
-- https://medium.com/meteor-js/how-to-build-web-apps-ultra-fast-with-meteor-iron-scaffolding-and-automatic-form-generation-11734eda8e67#.hh6uy2shp
-- https://scotch.io/tutorials/how-to-speed-up-meteor-development-with-scaffolding-and-automatic-form-generation
-- meteor kitchen (generate app)
-
 ===================================
-ADICIONES: METEOR-KITCHEN GENERATOR
+CREAR APLICACION CON: METEOR-KITCHEN GENERATOR
 ===================================
 - descargar de http://www.meteorkitchen.com/getting_started (0.9.54)
 - validar que meteor se encuentra en el path (C:\Users\andres\AppData\Local\.meteor\)
@@ -66,7 +60,7 @@ ADICIONES: METEOR-KITCHEN GENERATOR
 
 
 ================================
-ADICIONES: IRON-METEOR GENERATOR
+ANEXO: IRON-METEOR GENERATOR
 ================================
 # helper para la generacion de elementos de meteor
 npm install -g iron-meteor
@@ -100,3 +94,18 @@ iron g:template   sentencias/sentencia_create
 iron g:route      '/sentencias/create'
 iron g:route      '/sentencias/:_id/edit'
 iron g:controller Sentencias
+
+
+
+-------------------------------
+REFERENCIAS
+-------------------------------
+- https://themeteorchef.com/recipes/building-complex-forms/#tmc-getting-started
+- https://github.com/meteoris/meteoris
+- https://www.discovermeteor.com/
+- https://github.com/jtolla/meteor-admin-lte
+- http://meteor-boiler.meteor.com/blank
+- https://medium.com/meteor-js/how-to-build-web-apps-ultra-fast-with-meteor-iron-scaffolding-and-automatic-form-generation-11734eda8e67#.hh6uy2shp
+- https://scotch.io/tutorials/how-to-speed-up-meteor-development-with-scaffolding-and-automatic-form-generation
+- meteor kitchen (generate app)
+
